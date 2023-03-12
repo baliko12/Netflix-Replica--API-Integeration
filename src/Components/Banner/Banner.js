@@ -3,9 +3,15 @@ import "./Banner.css";
 import requests from "../../requests";
 import movieTrailer from "movie-trailer";
 import axios from "../../axios";
+import YouTube from "react-youtube";
 
 const base_url = "https://image.tmdb.org/t/p/original/";
 function Banner() {
+  const opts = {
+    height: "390",
+    width: "100%",
+    playerVars: { autoplay: 1 },
+  };
   const [movie, setMovie] = useState([]);
   const [trailerUrl, setTrailerUrl] = useState("");
   useEffect(() => {
@@ -26,6 +32,7 @@ function Banner() {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   }
   const handleClick = (movie) => {
+    console.log(movie);
     trailerUrl
       ? setTrailerUrl("")
       : movieTrailer(movie?.title || movie?.name || movie.original_name)
@@ -36,7 +43,7 @@ function Banner() {
           .catch((error) => console.log(error));
   };
   return (
-    <header
+    <div
       className="banner"
       style={{
         backgroundSize: "cover",
@@ -58,8 +65,11 @@ function Banner() {
           {truncate(movie?.overview, 150)}
         </h1>
       </div>
-      <div className="banner__fadeBottom" />
-    </header>
+      <div style={{ padding: "40px" }}>
+        {trailerUrl && <YouTube videoId={trailerUrl} opts={opts} />}
+      </div>
+      <div className="fadeBottom" />
+    </div>
   );
 }
 
